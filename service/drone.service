@@ -1,0 +1,9 @@
+[Unit]
+Description=Drone system startup service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /usr/bin/start_drone.sh
+
+[Install]
+WantedBy=multi-user.target

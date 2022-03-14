@@ -1,0 +1,17 @@
+<launch>
+     <arg name="os1_udp_dest" default="192.168.10.1"/>
+      <!-- <arg name="os1_hostname" default="os1-991935000708.local"/> -->
+      <arg name="os1_hostname" default="192.168.10.20"/>
+      <arg name="publish_non_dense_cloud" default="true"/>
+      <arg name="lidar_mode"   default="1024x20"/>
+      <arg name="viz"   value="false"/>
+
+    <include file="$(find ouster_ros)/os1.launch" > 
+      <arg name="os1_udp_dest" value="$(arg os1_udp_dest)"/>
+      <arg name="os1_hostname" value="$(arg os1_hostname)"/>
+      <arg name="publish_non_dense_cloud" value="true"/>
+      <arg name="lidar_mode"   value="2048x10"/>
+      <arg name="viz"   value="$(arg viz)"/>
+  </include> 
+
+</launch>
