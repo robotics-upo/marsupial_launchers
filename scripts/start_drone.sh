@@ -8,10 +8,10 @@ sudo ip addr add 192.168.10.1/24 dev eno1
 sleep 1
 sudo ip link set eno1 up
 sleep 1
-sudo dnsmasq -C /dev/null -kd -F 192.168.10.20,192.168.10.21 -i eno1 --bind-dynamic
+sudo dnsmasq -C /dev/null -kd -F 192.168.10.20,192.168.10.21 -i eno1 --bind-dynamic &
 sleep 8
 
-roslaunch drone_launchers sdk_drone.launch &
+roslaunch marsupial_launchers sdk_drone.launch &
 roslaunch marsupial_launchers os1_sensor_drone.launch 
 
 
