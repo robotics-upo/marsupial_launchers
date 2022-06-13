@@ -1,0 +1,16 @@
+<launch>
+
+    <node pkg="dji_sdk" type="dji_sdk_node" name="dji_sdk" output="screen">
+        <!-- node parameters -->
+        <param name="serial_name" type="string" value="/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0"/>
+        <!-- <param name="serial_name" type="string" value="/dev/ttyUSB0"/> -->
+       
+        <param name="baud_rate" type="int" value="921600"/>
+        <param name="app_id" type="int" value="1078947"/>
+        <param name="app_version" type="int" value="1"/>
+        <param name="align_time" type="bool" value="false"/>
+        <param name="enc_key" type="string" value="9752c0870bcc0b0fa094b8efbc59aa344a78a30a6899e71ded470c43595a4ffd"/>
+        <param name="use_broadcast" type="bool" value="false"/>
+    </node>
+
+</launch>

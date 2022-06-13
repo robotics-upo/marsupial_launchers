@@ -1,0 +1,15 @@
+<launch>
+
+    <arg name="map_name" default="thermal_central"/>
+
+    <node pkg="marsupial_optimizer" type="create_grid3d_node" name="create_grid3d_node" output="screen">
+        <param name="map_path"   value="$(find marsupial_optimizer)/maps/$(arg map_name).bt"/>
+        <param name="ws_x_min"   value="10"/>
+        <param name="ws_y_min"   value="0"/>
+        <param name="ws_z_min"   value="0"/>
+        <param name="ws_x_max"   value="70"/>
+        <param name="ws_y_max"   value="50"/>
+        <param name="ws_z_max"   value="30"/>
+    </node>
+
+</launch>
