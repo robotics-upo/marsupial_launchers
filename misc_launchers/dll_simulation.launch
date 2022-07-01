@@ -1,9 +1,7 @@
-<!--
--->
 <launch>
   
   # Fake odometry. You better use a good odometry estrimator as LOAM
-  <node pkg="tf" type="static_transform_publisher" name="odom_tf" args="0 0 0 0 0 0 odom base_link 10" />
+  <node pkg="tf" type="static_transform_publisher" name="odom_tf" args="0 0 0 0 0 0 $(arg robot_name)/odom $(arg robot_name)/base_link 10" />
 
   # termica map conf
   <arg name="base_frame_id" default="base_link"/>
@@ -14,15 +12,17 @@
   <arg name="initial_z" default="2.0"/>
   <arg name="initial_a" default="-3.040"/> 
   <arg name="map" default="thermal_central_2022-03-14-13-05-27.bt" />
-  <arg name="map_path" default="$(find dll)/maps/"/>
+  <arg name="map_path" default="$(find marsupial_optimizer)/maps/"/>
+  <arg name="robot_name" default="firefly"/>
+
  
   # Launch DLL
   <node name="dll_node" type="dll_node" pkg="dll" output="screen">
-    <remap from="/dll_node/initial_pose" to="/initialpose"/>
-    <remap from="/imu" to="/dji_sdk/imu"/>
-    <param name="in_cloud" value="/os1_cloud_node/points_non_dense" />
-    <param name="base_frame_id" value="$(arg base_frame_id)" />
-    <param name="odom_frame_id" value="$(arg odom_frame_id)" />
+    <remap from="dll_node/initial_pose" to="/initialpose"/>
+    <remap from="/imu" to="/$(arg robot_name)/imu"/>
+    <param name="in_cloud" value="//$(arg robot_name)/os1_cloud_node/points" />
+    <param name="base_frame_id" value="$(arg robot_name)/$(arg base_frame_id)" />
+    <param name="odom_frame_id" value="$(arg robot_name)/$(arg odom_frame_id)" />
     <param name="global_frame_id" value="$(arg global_frame_id)" />
 
     <param name="rate" value="10.0" />
