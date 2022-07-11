@@ -1,4 +1,4 @@
-<!--
+<!-- Bag file to test localization in the thermal central scenario with a bag
 -->
 <launch>
   
@@ -6,9 +6,9 @@
   <param name="use_sim_time" value="true" /> 
 
   # Bag file
-  <node name="bag_player" type="play" pkg="rosbag" args="/home/fernando/bags/localizacion/termica/termica_2022-03-14_2.bag -s 0 -r 1.0 --clock " />
+  <node name="bag_player" type="play" pkg="rosbag" args="$(env HOME)/.ros/2022-03-14-13-05-27.bag -s 0 -r 1.0 --clock " />
 
-  # Fake odometry. You better use a good odometry estrimator as LOAM
+  # Fake odometry. You better use a good odometry estimator as LOAM
   <node pkg="tf" type="static_transform_publisher" name="odom_tf" args="0 0 0 0 0 0 odom base_link 10" />
 
   # TFs
@@ -24,7 +24,7 @@
   <arg name="initial_y" default="11.935"/>
   <arg name="initial_z" default="2.0"/>
   <arg name="initial_a" default="-3.040"/> 
-  <arg name="map" default="thermal_central_2022-03-14-13-05-27.bt" />
+  <arg name="map" default="thermal_central.bt" />
   <arg name="map_path" default="$(find dll)/maps/$(arg map)"/>
  
   # Launch DLL
