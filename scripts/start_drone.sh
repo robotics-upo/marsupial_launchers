@@ -11,6 +11,8 @@ sleep 1
 sudo dnsmasq -C /dev/null -kd -F 192.168.10.20,192.168.10.21 -i eno1 --bind-dynamic &
 sleep 8
 
+roscore &
+sleep 2
 roslaunch marsupial_launchers sdk.launch &
 roslaunch marsupial_launchers os1_sensor.launch  
 
