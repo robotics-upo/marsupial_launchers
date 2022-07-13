@@ -31,11 +31,13 @@
   <arg name="base_frame_id" default="base_link"/>
   <arg name="odom_frame_id" default="odom"/>
   <arg name="global_frame_id" default="world"/>
-  <arg name="initial_x" default="57.50"/>
-  <arg name="initial_y" default="28"/>
+  <!-- <arg name="initial_x" default="57.50"/>
+  <arg name="initial_y" default="28"/>  Coords for thermal_central.bt-->
+  <arg name="initial_x" default="54.6"/>
+  <arg name="initial_y" default="12.6"/> <!-- Coords for thermal_central_2022-03-04-13-05-27.bt -->
   <arg name="initial_z" default="4.0"/>
   <arg name="initial_a" default="3.05"/> 
-  <arg name="map" default="thermal_central.bt" />
+  <arg name="map" default="thermal_central_2022-03-14-13-05-27.bt" />
   <arg name="map_path" default="$(find dll)/maps/$(arg map)"/>
 
   
