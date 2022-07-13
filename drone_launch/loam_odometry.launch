@@ -1,0 +1,34 @@
+<launch>
+    <arg name="inverted_lidar" default="false"/>
+	<arg name="init_frame" default="odom"/>
+	<arg name="aft_frame" default="base_link"/>
+    <param name="init_frame" value="$(arg init_frame)"/>
+    <param name="laser_odom_frame" value="os1_sensor"/>
+    <param name="aft_frame" value="$(arg aft_frame)"/>
+    <param name="scan_line" type="int" value="16" />
+    <param name="mapping_skip_frame" type="int" value="1" />
+    <param name="minimum_range" type="double" value="0.4"/>
+    <param name="mapping_line_resolution" type="double" value="0.2"/>
+    
+    
+    <node pkg="aloam_velodyne" type="ascanRegistration" name="ascanRegistration" required="true">
+        <remap from="/os1_cloud_node/points" to="/os1_cloud_node/points_non_dense"/>
+        <param name="lidar_frame" value="os1_lidar"/>
+        <param name="use_base_link" value="true"/>
+        <param name="robot_base_frame" value="base_link"/>
+    </node>
+
+        <node pkg="aloam_velodyne" type="alaserOdometry" name="alaserOdometry" >
+            <param name="init_frame" value="odom"/>
+            <param name="aft_frame" value="base_link"/>
+        </node>
+
+        <node pkg="odom_to_tf" type="odom_to_tf.py" name="odom_to_tf">
+            <remap from="/odom" to="/laser_odom_to_init"/>
+            <param name="odometry_frame" value="odom"/>
+            <param name="world_frame" value="world"/>
+            <param name="base_link" value="base_link"/>
+            <param name="laser_frame" value="os1_lidar"/>
+            <remap from="imu" to="/dji_sdk/imu"/>
+        </node>
+</launch>

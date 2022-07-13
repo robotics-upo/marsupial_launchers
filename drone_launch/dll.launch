@@ -37,6 +37,7 @@
     <param name="initial_z"   value="$(arg initial_z)"/>
     <param name="initial_a"   value="$(arg initial_a)"/>
     <param name="use_imu" value="true" />
+    <param name="use_yaw_increments" value="true"/>
     <param name="align_method" value="1" />  # 1: DLL, 2: NDT, 3: ICP
     <param name="use_yaw_increments" value="true"/>   
   </node>

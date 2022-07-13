@@ -4,15 +4,23 @@
   
   # Use simulation time for TFs
   <param name="use_sim_time" value="true" /> 
+  <arg name="use_odometry" default="true"/>
 
   # Bag file
-  <node name="bag_player" type="play" pkg="rosbag" args="$(env HOME)/.ros/2022-03-14-13-05-27.bag -s 0 -r 1.0 --clock " >
+  <arg name="bag_file" default="2022-03-14-13-05-27.bag"/>
+  <node name="bag_player" type="play" pkg="rosbag"
+  args="$(env HOME)/.ros/$(arg bag_file) -s 0 -r 1.0 --clock " >
     <remap from="/tf" to="/tf_useless"/>
     <remap from="/tf_static" to="/tf_s_useless"/>
   </node>
 
   # Fake odometry. You better use a good odometry estimator as LOAM
-  <node pkg="tf2_ros" type="static_transform_publisher" name="odom_tf" args="0 0 0 0 0 0 odom base_link" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="odom_tf" args="0 0 0 0 0 0 odom base_link" 
+  unless="$(arg use_odometry)"/>
+
+  <include file="$(find marsupial_launchers)/drone_launch/loam_odometry.launch" if="$(arg use_odometry)">
+    <arg name="inverted_lidar" value="true"/>
+  </include>
 
   # TFs
   <node name="tf_lidar_sensor" pkg="tf2_ros" type="static_transform_publisher" args="0.21 0.0 -0.26 0 0 0.0 base_link os1_sensor"/>
@@ -25,10 +33,12 @@
   <arg name="global_frame_id" default="world"/>
   <arg name="initial_x" default="57.50"/>
   <arg name="initial_y" default="28"/>
-  <arg name="initial_z" default="3.0"/>
+  <arg name="initial_z" default="4.0"/>
   <arg name="initial_a" default="3.05"/> 
   <arg name="map" default="thermal_central.bt" />
   <arg name="map_path" default="$(find dll)/maps/$(arg map)"/>
+
+  
  
   # Launch DLL
   <node name="dll_node" type="dll_node" pkg="dll" output="screen">
@@ -43,14 +53,15 @@
     <param name="map_path" value="$(arg map_path)" />
     <param name="sensor_dev" value="0.05" />   
     <param name="publish_point_cloud" value="true" />    
-    <param name="update_min_d" value="0.01" />
-    <param name="update_min_a" value="0.01" /> 
+    <param name="update_min_d" value="0.2" />
+    <param name="update_min_a" value="0.1" /> 
     <param name="update_min_time" value="0.1" />
     <param name="initial_x"   value="$(arg initial_x)"/>
     <param name="initial_y"   value="$(arg initial_y)"/>
     <param name="initial_z"   value="$(arg initial_z)"/>
     <param name="initial_a"   value="$(arg initial_a)"/>
-    <param name="use_imu" value="false" />
+    <param name="use_imu" value="true" />
+    <param name="use_yaw_increments" value="true"/>
     <param name="align_method" value="1" />  # 1: DLL, 2: NDT, 3: ICP
    
   </node>
