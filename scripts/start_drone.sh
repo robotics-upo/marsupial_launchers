@@ -14,19 +14,5 @@ sleep 8
 roscore &
 sleep 2
 roslaunch marsupial_launchers sdk.launch &
-roslaunch marsupial_launchers os1_sensor.launch  
+roslaunch marsupial_launchers sensors.launch  
 
-
-# roslaunch ouster_ros os1.launch os1_hostname:=10.5.5.97 os1_udp_dest:=10.5.5.1 lidar_mode:=1024x20 
-
-# roslaunch mbzirc_launch perception_mbzirc.launch &
-# roslaunch mbzirc_launch full_planner_mbzirc.launch &
-# roslaunch siar_driver start.launch publish_tf:=true
-
-
-
-#sleep 8
-#rosrun sparrow pound --node-id 0
-
-
- # #!/bin/bash

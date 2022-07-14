@@ -6,5 +6,6 @@
   <node name="tf_lidar_sensor" pkg="tf" type="static_transform_publisher" args="0.21 0.0 -0.26 0 0 0.0 base_link os1_sensor 10"/>
   <node name="tf_lidar_imu" pkg="tf" type="static_transform_publisher" args="0.006253 -0.011775 0.007645 0.0 0.0 0.0 1.0 os1_sensor os1_imu 10"/>
   <node name="tf_lidar" pkg="tf" type="static_transform_publisher" args="0 0.0 0.03618 3.1416 0.0 0.0 os1_sensor os1_lidar 10"/>
-
+  <node name="tf_rgbd_camera" pkg="tf" type="static_transform_publisher" args="0 0.10 -0.24 1.57 0.0 -1.57 base_link camera_link 10"/>
+   
 </launch>	
