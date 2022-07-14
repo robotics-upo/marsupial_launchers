@@ -9,10 +9,10 @@
   <arg name="base_frame_id" default="base_link"/>
   <arg name="odom_frame_id" default="odom"/>
   <arg name="global_frame_id" default="world"/>
-  <arg name="initial_x" default="53.962"/>
-  <arg name="initial_y" default="11.935"/>
+  <arg name="initial_x" default="54.6"/>
+  <arg name="initial_y" default="12.6"/>
   <arg name="initial_z" default="2.0"/>
-  <arg name="initial_a" default="-3.040"/> 
+  <arg name="initial_a" default="3.040"/> 
   <arg name="map" default="thermal_central_2022-03-14-13-05-27.bt" />
   <arg name="map_path" default="$(find dll)/maps/$(arg map)"/>
 
