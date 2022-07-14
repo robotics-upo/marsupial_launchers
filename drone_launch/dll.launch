@@ -53,6 +53,7 @@
     <param name="use_yaw_increments" value="$(arg use_yaw_increments)"/>
     <param name="align_method" value="1" />  # 1: DLL, 2: NDT, 3: ICP
     <param name="use_yaw_increments" value="true"/>   
+    <param name="n_downsample" value="3"/>
   </node>
 
 </launch>	
