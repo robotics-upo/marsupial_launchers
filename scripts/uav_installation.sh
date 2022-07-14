@@ -23,6 +23,10 @@ git clone -devel_marsupial https://github.com/robotics-upo/dll.git
 git clone https://github.com/robotics-upo/odom_to_tf.git
 git clone https://github.com/
 
+# Mav comms
+echo "\n Installing mav_comm \n\n"
+git clone https://github.com/ethz-asl/mav_comm.git
+
 # To get .bt form gazebo world
 # sim_gazebo_plugins # Tengo que subir este paquete
 
@@ -93,3 +97,4 @@ sudo make install
 ## Install the welcome message to the ssh
 roscd marsupial_launcher/cfg
 sudo cp welcome.txt /etc/motd
+
