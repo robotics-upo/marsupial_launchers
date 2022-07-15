@@ -1,8 +1,7 @@
 <launch>
      
-    <include file="$(find marsupial_launchers)/drone_launch/os1_sensor.launch" > 
-  </include> 
-
+  <include file="$(find marsupial_launchers)/drone_launch/os1_sensor.launch" /> 
+  <include file="$(find marsupial_launchers)/drone_launch/frames.launch" /> 
   <include file="$(find astra_camera)/launch/astra.launch"/>
 
 </launch>
