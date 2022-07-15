@@ -1,7 +1,6 @@
 #!/bin/bash
 source /home/drone/marsupial_ws/devel/setup.bash
 
-
 ip addr flush dev eno1
 sleep 1
 sudo ip addr add 192.168.10.1/24 dev eno1
@@ -15,11 +14,8 @@ roscore &
 sleep 2
 roslaunch marsupial_launchers sdk.launch &
 roslaunch marsupial_launchers sensors.launch  &
+roslaunch matrice_traj_tracker matrice_marsupial_traj_tracker.launch &
 
 sleep 10
-roslaunch marsupial_launchers dll.launch &
-
-#sleep 5
-#roslaunch matrice_traj_tracker matrice_marsupial_traj_tracker.launch
-# Better to launch it separately by now and monitor!
+roslaunch marsupial_launchers dll.launch 
 
