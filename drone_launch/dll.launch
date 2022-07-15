@@ -22,7 +22,7 @@
 
 
     # Fake odometry. You better use a good odometry estimator as LOAM
-  <node pkg="tf2_ros" type="static_transform_publisher" name="odom_tf" args="0 0 0 0 0 0 odom base_link" 
+  <node pkg="tf2_ros" type="static_transform_publisher" name="static_odom_tf" args="0 0 0 0 0 0 odom base_link" 
   unless="$(arg use_odometry)"/>
 
   <include file="$(find marsupial_launchers)/drone_launch/loam_odometry.launch" if="$(arg use_odometry)">
