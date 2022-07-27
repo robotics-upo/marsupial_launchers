@@ -20,6 +20,10 @@
   /camera/rgb/camera_info
   /camera/depth_registered/camera_info
   /camera/depth_registered/image/compressed
+  /mission_interface/start_mission
+  /control_tie/set_length
+  /control_tie/enable
+  /control_tie/length_status
 
  " />
 
