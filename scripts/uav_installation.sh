@@ -18,10 +18,11 @@ catkin_make
 cd ~/marsupial_ws/src
 
 # For localization stuff
-echo Downloading localization packages: DLL, Odom 2 Tf, ALoam
+echo Downloading localization packages: DLL, Odom 2 Tf, ALoam, timed_roslaunch
 git clone -devel_marsupial https://github.com/robotics-upo/dll.git
 git clone https://github.com/robotics-upo/odom_to_tf.git
-git clone https://github.com/
+git clone https://github.com/robotics-upo/a-loam.git
+git clone https://github.com/robotics-upo/timed_roslaunch.git
 
 # Mav comms
 echo "\n Installing mav_comm \n\n"
@@ -64,9 +65,6 @@ git clone https://github.com/robotics-upo/upo_actions.git
 #T o get a marker in the desired frame_link
 echo "\n Installing UPO Markers \n\n"
 git clone https://github.com/robotics-upo/upo_markers.git
-
-
-git clone -b melodic-devel https://github.com/MoriKen254/timed_roslaunch.git
 
 # CERES Solver Installation
 echo "\n Installing CERES \n\n"
