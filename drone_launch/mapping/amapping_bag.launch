@@ -2,7 +2,7 @@
 
     <param name="use_sim_time" value="true"/>
     <arg name="bag_name" default="2022-12-21-12-11-18.bag"/>
-    <arg name="bag_file" default="$(env HOME)/Experiments_Theatre/bags/$(arg bag_name)"/>
+    <arg name="bag_file" default="$(env HOME)/Documents/Bags/teatro/drone/$(arg bag_name)"/>
 
     <include file="$(find marsupial_launchers)/drone_launch/mapping/amapping.launch"/>
     <node name="bag_player" pkg="rosbag" type="play" args="$(arg bag_file) --clock --pause"/>
