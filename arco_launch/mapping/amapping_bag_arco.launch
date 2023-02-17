@@ -1,8 +1,8 @@
 <launch>
 
     <param name="use_sim_time" value="true"/>
-    <arg name="bag_name" default="2023-02-14-12-41-18_edited.bag"/>
-    <arg name="bag_file" default="$(env HOME)/Documents/Bags/edificio45_with_OS1_IMU/$(arg bag_name)"/>
+    <arg name="bag_name" default="2023-02-16-10-18-05.bag"/>
+    <arg name="bag_file" default="$(env HOME)/Documents/Bags/edificio45/primera_planta/$(arg bag_name)"/>
     <!-- <arg name="bag_file" default="$(env HOME)/$(arg bag_name)"/> -->
 
     <include file="$(find marsupial_launchers)/arco_launch/mapping/amapping_arco.launch"/>
