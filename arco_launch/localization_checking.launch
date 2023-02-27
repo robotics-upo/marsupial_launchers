@@ -3,7 +3,8 @@
     <arg name="bag_name" default="2023-02-14-17-34-37_edited.bag"/>
     <arg name="bag_file" default="$(env HOME)/Documents/Bags/edificio45/rellano_with_OS1_IMU/with_idmind_arco_imu/$(arg bag_name)"/>
     <arg name="rviz" default="true"/>
-    <arg name="map_name" default="cutted_rellano45"/>
+    <arg name="map_name" default="teatro"/>
+    <!-- <arg name="map_name" default="cutted_rellano45"/> -->
     <arg name="use_bag" default="false"/>
     <param name="use_sim_time" value="$(arg use_bag)"/>
 
