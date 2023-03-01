@@ -12,7 +12,7 @@
   <arg name="initial_y" default="25"/>
   <arg name="initial_z" default="2.0"/>
   <arg name="initial_a" default="3.1415"/> 
-  <arg name="map" default="rellano45.bt" />
+  <arg name="map" default="teatro.bt" />
   <arg name="map_path" default="$(find marsupial_optimizer)/maps/$(arg map)"/>
 
   <arg name="in_cloud_topic" default="/arco_os1_cloud_node/points_non_dense"/>
