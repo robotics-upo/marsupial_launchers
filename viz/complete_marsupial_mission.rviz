@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /Grid1
         - /TF1/Frames1
         - /TF1/Tree1
       Splitter Ratio: 0.5290178656578064
@@ -26,7 +27,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: arco_PC_OS1
+    SyncSource: drone-PC_DLL
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -64,7 +65,7 @@ Visualization Manager:
       Color: 204; 0; 0
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -79,7 +80,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -148,7 +149,7 @@ Visualization Manager:
       Color: 252; 175; 62
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -159,11 +160,11 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.009999999776482582
       Style: Flat Squares
-      Topic: /dll_drone_node/map_point_cloud
+      Topic: /dll_node/map_point_cloud
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Class: rviz/TF
       Enabled: true
       Frame Timeout: 15
@@ -171,9 +172,11 @@ Visualization Manager:
         All Enabled: false
         arco/base_link:
           Value: true
+        arco/front_left:
+          Value: true
+        arco/front_right:
+          Value: true
         arco/imu:
-          Value: false
-        arco/odom:
           Value: false
         arco/os1_imu:
           Value: false
@@ -181,20 +184,32 @@ Visualization Manager:
           Value: false
         arco/os1_sensor:
           Value: false
+        arco/rear_left:
+          Value: true
+        arco/rear_right:
+          Value: true
         base_link:
           Value: true
-        imu:
+        camera_depth_frame:
+          Value: true
+        camera_depth_optical_frame:
+          Value: true
+        camera_link:
+          Value: true
+        camera_rgb_frame:
+          Value: true
+        camera_rgb_optical_frame:
           Value: true
         odom:
           Value: true
         os1_imu:
-          Value: true
+          Value: false
         os1_lidar:
-          Value: true
+          Value: false
         os1_sensor:
-          Value: true
+          Value: false
         world:
-          Value: true
+          Value: false
       Marker Alpha: 1
       Marker Scale: 10
       Name: TF
@@ -203,19 +218,15 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
-          arco/odom:
-            arco/base_link:
-              arco/imu:
-                {}
-              arco/os1_sensor:
-                arco/os1_imu:
-                  {}
-                arco/os1_lidar:
-                  {}
           odom:
             base_link:
-              imu:
-                {}
+              camera_link:
+                camera_depth_frame:
+                  camera_depth_optical_frame:
+                    {}
+                camera_rgb_frame:
+                  camera_rgb_optical_frame:
+                    {}
               os1_sensor:
                 os1_imu:
                   {}
@@ -225,19 +236,19 @@ Visualization Manager:
       Value: true
     - Alpha: 1
       Class: rviz/Axes
-      Enabled: false
+      Enabled: true
       Length: 10
       Name: Axes
       Radius: 0.5
       Reference Frame: <Fixed Frame>
       Show Trail: false
-      Value: false
+      Value: true
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /mission_interface/trajectory_ugv
       Name: TrajectoryUGV_Points
       Namespaces:
-        traj_ugv: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -253,7 +264,7 @@ Visualization Manager:
       Marker Topic: /mission_interface/trajectory_uav
       Name: TrajectoryUAV_Points
       Namespaces:
-        traj_uav: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -292,7 +303,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 57.44270706176758
+      Distance: 68.35340118408203
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -300,17 +311,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 10.228352546691895
-        Y: 16.935659408569336
-        Z: -24.42605209350586
+        X: 6.734905242919922
+        Y: 19.897207260131836
+        Z: -26.04709243774414
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5197975635528564
+      Pitch: 1.2397979497909546
       Target Frame: <Fixed Frame>
-      Yaw: 6.205430507659912
+      Yaw: 6.180421829223633
     Saved: ~
 Window Geometry:
   Displays:

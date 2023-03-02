@@ -13,12 +13,13 @@
 
 // ROS stuff
 ros::NodeHandle  nh;
-//std_msgs::Bool length_reached_msg;
+std_msgs::Bool length_reached_msg;
 std_msgs::Float32 length_msg;
-//std_msgs::UInt16 count_steps_turn_motor_msg;
-//std_msgs::Bool controlling_msg;
 std_msgs::Float32 error_msg;
-//ros::Publisher pub_length_reached("tie_controller/length_reached", &length_reached_msg); // Let the mission controller know that the cable as reached the desired length
+ros::Publisher pub_length_reached("tie_controller/length_reached", &length_reached_msg); // Let the mission controller know that the cable as reached the desired length
+ros::Publisher pub_error("tie_controller/error_status", &error_msg); // Para depurar el funcionamiento del cacharro
+ros::Publisher pub_length("tie_controller/length_status", &length_msg);   // Emit the current estimated longitude of the tie
+
 
 // Arduino stuff
 const int pinIN1 = 7; // pin for spin direction
@@ -29,17 +30,22 @@ const int pinMotor[3] = { pinENA, pinIN1, pinIN2 };
 
 
 // Control stuff
-const float diameter = 0.15;
+const float diameter = 0.1; //original 0.15
 const int pulse_per_loop = 460; // number of encoder pulse in one loop 
 const float meter_per_loop = 0.45; //Relation between tether length(mts) per reel loop
 const float tolerance_error = 0.02; //min error to control Reel
 bool controlling = false;
-float initial_L = 2.5; //initial length 
-float current_L = 2.5; //initial length 
+float initial_L = 5.0; //initial length 
+float current_L = 5.0; //initial length 
 float ref_L = initial_L; // reference length to control Must be initialize as initial_L value to not move from the begining
-bool enable = false;
 int sign = 1;
-volatile long int encoder_pos =  (int)(((float)pulse_per_loop) * initial_L/meter_per_loop);
+
+float error_init = 0.0;
+int PWM = 0;
+int PWM_max = 105;
+int PWM_min = 80;
+float error= 0.0;
+volatile long int encoder_pos =  (int)(((float)pulse_per_loop) * initial_L/meter_per_loop); //create variable and give initial value
 
 // *** Here all the Functions ***
 void moveForward(const int pinMotor[3], int speed)
@@ -68,97 +74,81 @@ void fullStop(const int pinMotor[3])
 void lengthSubCallback(const std_msgs::Float32& length_ref_msg) {
     if ( length_ref_msg.data <= 2.0 || length_ref_msg.data > 25) {
       fullStop(pinMotor);
-      // nh.loginfo("Received reference length out of range");
       return;
     }
 
-    if (fabs(current_L - length_ref_msg.data) > 0.02) { 
-      ref_L = length_ref_msg.data;
-      //initial_L = ref_L;
-      controlling  = true;
-      if ( 0.0 < (ref_L - current_L))
-        sign = 1;
-      else
-        sign = -1;
-      //nh.loginfo("Received new length command: ");
-    //  length_reached_msg.data = false;
-    //  pub_length_reached.publish(&length_reached_msg);
-    //nh.loginfo("Length NOT Reached");
-    }
+    ref_L = length_ref_msg.data;
+    controlling  = true;
+    if ( 0.0 < (ref_L - current_L))
+      sign = 1;
+    else
+      sign = -1;
+      length_reached_msg.data = false;
+      pub_length_reached.publish(&length_reached_msg);
+    
+    error_init = ref_L - current_L;
 }
 
 void resetLengthSubCallback(const std_msgs::Float32& length_reset) {
-     current_L = initial_L = length_reset.data;
+     nh.loginfo("HOLA 11");
+     current_L = initial_L = ref_L = length_reset.data;
      encoder_pos =  (int)(((float)pulse_per_loop) * length_reset.data/meter_per_loop);
+     error_msg.data = 0.0;
+     pub_error.publish(&error_msg);
      controlling = false;
-     enable= false;
      fullStop(pinMotor);
-}
-
-void enableSubCallback(const std_msgs::Bool& bool_msg) { 
-    enable = bool_msg.data;
-    if (enable) {
-        controlling = false;
-        //nh.loginfo("Control enabled");
-    } else {
-        controlling = false;
-        //nh.loginfo("Control disabled");
-    }
+     nh.loginfo("HOLAAA 2");
 }
 
 ros::Subscriber<std_msgs::Float32> sub("tie_controller/set_length", &lengthSubCallback );   // Subscriber for the length command
-ros::Subscriber<std_msgs::Bool> sub_enable("tie_controller/enable", &enableSubCallback);       // Wait for the message to start the system
 ros::Subscriber<std_msgs::Float32> sub_reset("tie_controller/reset_length_estimation", &resetLengthSubCallback);         // Length reset topic just in case
 
-ros::Publisher pub_length("tie_controller/length_status", &length_msg);   // Emit the current estimated longitude of the tie
-//ros::Publisher pub_count_steps_turn_motor("tie_controller/count_steps_turn_motor", &count_steps_turn_motor_msg); // Para depurar el funcionamiento del cacharro
-//ros::Publisher pub_controlling("tie_controller/controlling_status", &controlling_msg); // Para depurar el funcionamiento del cacharro
-ros::Publisher pub_error("tie_controller/error_status", &error_msg); // Para depurar el funcionamiento del cacharro
-
 void encoder(){
-  if (sign == 1){
-    encoder_pos++;
-  }else{
-    encoder_pos--;
-  }
+    if (sign == 1){
+      encoder_pos++;
+    }else{
+      encoder_pos--;
+    }
 }
 
 void controlReel(float ref_L_){
   // put your main code here, to run repeatedly:
-  float error =  ref_L_ - current_L;
+  error =  ref_L_ - current_L;
+
+  if (error > tolerance_error || error < -tolerance_error)
+    PWM = (int)(((PWM_max- PWM_min)/(error_init-tolerance_error))*(error- tolerance_error)+ PWM_min);
+  else
+    PWM = 0;
+  
   if ( 0.0 < error)
     sign = 1;
   else
     sign = -1;
 
-//  controlling_msg.data = controlling;
   error_msg.data = error;
-//  pub_controlling.publish(&controlling_msg);
   pub_error.publish(&error_msg);
 
   if(current_L > 2.0 && current_L < 25.0){
     if (error < tolerance_error && error > -tolerance_error && controlling){
-     //  PWM = 0;
-     // initial_L = current_L;
-    //  length_reached_msg.data = true;
-    //  pub_length_reached.publish(&length_reached_msg);
-     //nh.loginfo("Length Reached");
-     fullStop(pinMotor);
+      length_reached_msg.data = true;
+      controlling = false;
+      pub_length_reached.publish(&length_reached_msg);
+      fullStop(pinMotor);
     }
     else if (error > tolerance_error && controlling){ // increase length
       if (error > 1.0){
-        moveForward(pinMotor, 40);
+        moveForward(pinMotor, PWM);
       }
       else{
-        moveForward(pinMotor, 40);
+        moveForward(pinMotor, PWM);
       }
     }
     else if ( error < tolerance_error && controlling){ // reduce lentgh
       if (error < -1.0){
-        moveBackward(pinMotor, 40);
+        moveBackward(pinMotor, PWM);
       }
       else{
-        moveBackward(pinMotor, 40);
+        moveBackward(pinMotor, PWM);
       }
     }
   }
@@ -176,30 +166,19 @@ void setup()
    // ROS Config
    nh.initNode();
    nh.advertise(pub_length);
-   //nh.advertise(pub_count_steps_turn_motor);
-  // nh.advertise(pub_length_reached);
-   //nh.advertise(pub_controlling);
+   nh.advertise(pub_length_reached);
    nh.advertise(pub_error);
    nh.subscribe(sub);
-   nh.subscribe(sub_enable);
    nh.subscribe(sub_reset);
 }
 
 void loop()
 {
-   current_L = (((float)(encoder_pos)* meter_per_loop))/(float)pulse_per_loop;
+  current_L = (((float)(encoder_pos)* meter_per_loop))/(float)pulse_per_loop;
    
-   if (enable){ // Reel working after security check         
-      controlReel(ref_L);     
-   }  else { // Waiting to receive the enable topiccurrent_L = (float)(encoder_pos/pulse_per_loop)*PI*diameter;
-      fullStop(pinMotor);
-      delay(10);       
-  }
+  controlReel(ref_L);     
   
   length_msg.data = current_L;
   pub_length.publish(&length_msg);
-  //count_steps_turn_motor_msg.data = encoder_pos;
-  //pub_count_steps_turn_motor.publish(&count_steps_turn_motor_msg);
   nh.spinOnce();
-  //delayMicroseconds(100); // when using delay alone --> milliseconds
 }
