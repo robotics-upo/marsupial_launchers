@@ -4,11 +4,11 @@
   <arg name="odom_frame_id" default="$(arg robot_name)/odom"/>
   <arg name="global_frame_id" default="world"/>
    # Load by YAML file
-  <arg name="initial_x" default="7.0"/>
-  <arg name="initial_y" default="7.7"/>
+  <arg name="initial_x" default="7.83"/>
+  <arg name="initial_y" default="9.28"/>
   <arg name="initial_z" default="0.5"/>
   <arg name="initial_a" default="1.048"/> 
-  <arg name="map" default="teatro" />
+  <arg name="map" default="teatro_wall" />
   <arg name="map_path" default="$(find marsupial_optimizer)/maps/$(arg map).bt"/>
 
   <arg name="in_cloud_topic" default="/$(arg robot_name)_os1_cloud_node/points_non_dense"/>
