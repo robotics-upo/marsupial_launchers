@@ -1,0 +1,14 @@
+<launch>
+
+    <param name="use_sim_time" value="true"/>
+    <arg name="bag_name" default="refinitiva_2023-03-06-12-19-25.bag"/>
+    <arg name="bag_file" default="$(env HOME)/Documents/Bags/teatro/last_day/$(arg bag_name)"/>
+    <!-- <arg name="bag_file" default="$(env HOME)/$(arg bag_name)"/> -->
+
+    <include file="$(find marsupial_launchers)/arco_launch/dll_arco.launch">
+        <arg name="robot_name"  value="tongo"/>    
+    </include>
+
+    <node name="bag_player" pkg="rosbag" type="play" args="-s 0 $(arg bag_file) --clock --pause " output="screen"/>
+
+</launch>

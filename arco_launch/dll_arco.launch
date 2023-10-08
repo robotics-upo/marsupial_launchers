@@ -4,11 +4,11 @@
   <arg name="odom_frame_id" default="$(arg robot_name)/odom"/>
   <arg name="global_frame_id" default="world"/>
    # Load by YAML file
-  <arg name="initial_x" default="7.83"/>
-  <arg name="initial_y" default="9.28"/>
-  <arg name="initial_z" default="0.5"/>
-  <arg name="initial_a" default="1.048"/> 
-  <arg name="map" default="teatro_wall" />
+  <arg name="initial_x" default="7.486"/>
+  <arg name="initial_y" default="7.369"/>
+  <arg name="initial_z" default="0.544"/>
+  <arg name="initial_a" default="1.061"/> 
+  <arg name="map" default="teatro" />
   <arg name="map_path" default="$(find marsupial_optimizer)/maps/$(arg map).bt"/>
 
   <arg name="in_cloud_topic" default="/$(arg robot_name)_os1_cloud_node/points_non_dense"/>
@@ -24,7 +24,7 @@
   # Launch DLL
   <node name="dll_$(arg robot_name)_node" type="dll_node" pkg="dll" output="screen">
     <!-- <rosparam command="load" file="$(find marsupial_launchers)/cfg/dll_init_pos_$(arg robot_name)_$(arg map).yaml"/> -->
-    <remap from="/dll_node/map_point_cloud" to="/dll_$(arg robot_name)_node/map_point_cloud"/>
+    <remap from="/dll_node/map_point_cloud" to="/dll_arco_node/map_point_cloud"/>
     <remap from="/dll_node/initial_pose" to="/initialpose"/>
     <remap from="/imu" to="$(arg imu_topic)"/>
     <param name="in_cloud" value="$(arg in_cloud_topic)" />
