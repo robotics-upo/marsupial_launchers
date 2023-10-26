@@ -3,7 +3,7 @@
     <arg name="only_odometry" default="false"/>
     <arg name="init_frame"  default="odom" />
     <arg name="laser_odom_frame"  default="base_link"/>
-    <arg name="robot_name" default="drone"/>
+    <arg name="robot_name" default="arco"/>
 
     <param name="scan_line" type="int" value="16" />
 
@@ -16,12 +16,13 @@
     <param name="mapping_line_resolution" type="double" value="0.2"/>
     <param name="mapping_plane_resolution" type="double" value="0.4"/>
 
-    <node pkg="aloam_velodyne" type="ascanRegistration" name="ascanRegistration" output="screen">
-        <!-- <remap from="imu" to="/$(arg robot_name)/imu"/> -->
-        <remap from="imu" to="/dji_sdk/imu"/>
-        <remap from="os1_cloud_node/points_non_dense" to="/os1_cloud_node/points_non_dense"/>
+    <node pkg="aloam_velodyne" type="ascanRegistration" name="ascanRegistration">
+        <remap from="imu" to="/$(arg robot_name)/imu"/>
+        <remap from="os1_cloud_node/points_non_dense" to="/arco_os1_cloud_node/points_non_dense"/>
         
         <param name="use_base_link" value="true"/> 
+        <param name="robot_base_frame" value="arco/base_link"/> 
+        <param name="lidar_frame" value="arco/os1_lidar"/> 
         <param name="init_frame" value="$(arg robot_name)/$(arg init_frame)" if="$(arg only_odometry)"/>
     </node>
 
