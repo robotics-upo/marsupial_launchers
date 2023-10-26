@@ -9,11 +9,11 @@
   <arg name="base_frame_id" default="base_link"/>
   <arg name="odom_frame_id" default="odom"/>
   <arg name="global_frame_id" default="world"/>
-  <arg name="initial_x" default="54.6"/>
-  <arg name="initial_y" default="12.6"/>
-  <arg name="initial_z" default="2.0"/>
-  <arg name="initial_a" default="3.040"/> 
-  <arg name="map" default="thermal_central_2022-03-14-13-05-27.bt" />
+  <arg name="initial_x" default="9.3"/>
+  <arg name="initial_y" default="9.5"/>
+  <arg name="initial_z" default="0.8"/>
+  <arg name="initial_a" default="3.14"/> 
+  <arg name="map" default="teatro.bt" />
   <arg name="map_path" default="$(find dll)/maps/$(arg map)"/>
 
   <arg name="use_odometry" default="false"/>
