@@ -1,6 +1,6 @@
 <launch>
 
-  <node pkg="rosbag" type="record" name="rosbag_record" args="record
+  <node pkg="rosbag" type="record" name="rosbag_record_drone" args="record
   /height_above_takeoff
   /dji_sdk/acceleration_ground_fused 
   /dji_sdk/angular_velocity_fused 
@@ -26,7 +26,11 @@
   /tie_controller/enable
   /tie_controller/length_status
   /tie_controller/length_reached
+  /UAVNavigation3D/goal
+  /UAVNavigation3D/feedback
 
+  /usb_cam/image_raw/compressed
+  /usb_cam/camera_info
  " />
 
 </launch>
