@@ -16,16 +16,55 @@
   /tf
   /os1_cloud_node/imu 
   /os1_cloud_node/points_non_dense
-  /camera/rgb/image_raw/compressed
-  /camera/rgb/camera_info
-  /camera/depth_registered/camera_info
-  /camera/depth_registered/image/compressed
+  /usb_cam/rgb/image_raw/compressed
+  /usb_cam/rgb/camera_info
   /mission_interface/start_mission
   /mission_interface/uav_ready_for_mission
   /tie_controller/set_length
   /tie_controller/enable
   /tie_controller/length_status
   /tie_controller/length_reached
+
+  /arco/idmind_imu/imu
+  /arco_os1_cloud_node/points_non_dense
+  /mission_interface/start_mission
+  /mission_interface/uav_ready_for_mission
+  /tie_controller/set_length
+  /tie_controller/enable
+  /tie_controller/length_status
+  /tie_controller/length_reached
+  
+  /arco/cmd_vel_joy
+  /arco/cmd_vel_nav
+  /arco/idmind_motors/set_velocities
+  /arco/idmind_motors/odom
+  
+  /mission_interface/load_mission
+  /mission_interface/start_mission
+  /mission_interface/trajectory_catenary
+  /mission_interface/trajectory_lines_uav
+  /mission_interface/trajectory_lines_ugv
+  /mission_interface/trajectory_uav
+  /mission_interface/trajectory_ugv
+  /mission_interface/ugv_ready_for_mission
+
+  /Navigation/cancel
+  /Navigation/feedback
+  /Navigation/goal
+  /Navigation/result
+  /Navigation/status
+
+  /UAVNavigation3D/cancel
+  /UAVNavigation3D/feedback
+  /UAVNavigation3D/goal
+  /UAVNavigation3D/result
+  /UAVNavigation3D/status
+
+  /TakeOff/cancel
+  /TakeOff/feedback
+  /TakeOff/goal
+  /TakeOff/result
+  /TakeOff/status
 
  " />
 
