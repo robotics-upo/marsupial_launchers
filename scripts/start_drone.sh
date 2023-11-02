@@ -22,10 +22,14 @@ else
     roscore &
     sleep 2
 fi
+
+sleep 2
 roslaunch marsupial_launchers sdk.launch &
+sleep 2
 roslaunch marsupial_launchers sensors.launch  &
+sleep 2
 roslaunch matrice_traj_tracker matrice_marsupial_traj_tracker.launch &
 
-sleep 10
+sleep 2
 roslaunch marsupial_launchers dll.launch 
 

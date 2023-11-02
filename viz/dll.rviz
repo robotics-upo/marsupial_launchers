@@ -55,8 +55,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.2490909099578857
-        Min Value: -1.2842888832092285
+        Max Value: 6.785475730895996
+        Min Value: 3.176462173461914
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -154,7 +154,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: os1_lidar
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
@@ -178,7 +178,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 16.124156951904297
+      Distance: 50.07918930053711
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -194,9 +194,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8547967672348022
+      Pitch: 0.1497970074415207
       Target Frame: <Fixed Frame>
-      Yaw: 6.173582553863525
+      Yaw: 4.7435712814331055
     Saved: ~
 Window Geometry:
   Displays:

@@ -4,20 +4,20 @@
   <arg name="odom_frame_id" default="odom"/>
   <arg name="global_frame_id" default="world"/>
   # Load by YAML file
-  <arg name="initial_x" default="9.898"/>
-  <arg name="initial_y" default="9.743"/>
-  <arg name="initial_z" default="1.043"/>
-  <arg name="initial_a" default="-3.1415"/> 
+  <arg name="initial_x" default="13.1"/>
+  <arg name="initial_y" default="17.6"/>
+  <arg name="initial_z" default="0.7"/>
+  <arg name="initial_a" default="3.14"/> 
   <arg name="map" default="teatro" />
-  <!-- <arg name="map_path" default="$(find dll)/maps/$(arg map)"/> -->
-  <arg name="map_path" default="$(find marsupial_optimizer)/maps/$(arg map).bt"/>
+  <arg name="map_path" default="$(find dll)/maps/$(arg map).bt"/> 
+  <!--<arg name="map_path" default="$(find marsupial_optimizer)/maps/$(arg map).bt"/> -->
 
   <arg name="use_odometry" default="false"/>
   <arg name="use_yaw_increments" default="$(eval not use_odometry)"/>
   <arg name="use_imu" default="true"/>
 
   # Fake odometry. You better use a good odometry estimator as LOAM
-  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_odom_tf" args="0 0 0 0 0 0 odom base_link" unless="$(arg use_odometry)"/> -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="static_odom_tf" args="0 0 0 0 0 0 odom base_link" unless="$(arg use_odometry)"/>
 
   <include file="$(find marsupial_launchers)/drone_launch/loam_odometry.launch" if="$(arg use_odometry)">
     <arg name="inverted_lidar" value="true"/>
@@ -28,7 +28,8 @@
     <!-- <rosparam command="load" file="$(find marsupial_launchers)/cfg/dll_init_pos_$(arg robot_name)_$(arg map).yaml"/> -->
     <remap from="/dll_node/map_point_cloud" to="/dll_$(arg robot_name)_node/map_point_cloud"/>
     <remap from="/dll_$(arg robot_name)_node/initial_pose" to="/initialpose"/>
-    <remap from="/imu" to="/dji_sdk/imu"/>
+    <remap from="/imu" to="/dji_sdk/imu"/> 
+    <!-- <remap from="/imu" to="/os1_cloud_node/imu"/> -->
     <param name="in_cloud" value="/os1_cloud_node/points_non_dense" />
     <param name="base_frame_id" value="$(arg base_frame_id)" />
     <param name="odom_frame_id" value="$(arg odom_frame_id)" />

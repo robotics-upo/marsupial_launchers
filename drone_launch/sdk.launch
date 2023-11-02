@@ -1,6 +1,6 @@
 <launch>
 
-    <node pkg="dji_sdk" type="dji_sdk_node" name="dji_sdk" output="screen" respawn="true" respawn_delay="10">
+    <node pkg="dji_sdk" type="dji_sdk_node" name="dji_sdk" output="screen" >
         <!-- node parameters -->
         <param name="serial_name" type="string" value="/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0"/>
         <!-- <param name="serial_name" type="string" value="/dev/ttyUSB0"/> -->
