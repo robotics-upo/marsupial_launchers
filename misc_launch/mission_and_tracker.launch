@@ -1,10 +1,10 @@
 <launch>
-    <arg name="map_name" default="rellano45" /> 
-    <arg name="mission_file" default="rellano45_0" /> 
+    <arg name="map_name" default="teatro" /> 
+    <arg name="mission_file" default="teatro_from_takeoff" /> 
     <arg name="ugv_name" default="arco" /> 
     
     <arg name="able_tracker_ugv" default="true" /> 
-    <arg name="able_tracker_uav" default="false" /> 
+    <arg name="able_tracker_uav" default="true" /> 
     <arg name="able_tracker_tether" default="false" /> 
 
     <include file="$(find marsupial_mission_interface)/launch/mission_execution.launch">
@@ -16,7 +16,7 @@
         <arg name="able_tracker_tether" default="$(arg able_tracker_tether)"/>
     </include>
 
-    <include file="$(find arco_path_tracker)/launch/new_arco_traj_tracker.launch" if="$(arg able_tracker_ugv)">
+    <include file="$(find upo_path_tracker)/launch/new_arco_traj_tracker.launch" if="$(arg able_tracker_ugv)">
     </include>
 
     <include file="$(find matrice_traj_tracker)/launch/matrice_marsupial_traj_tracker.launch" if="$(arg able_tracker_uav)">
