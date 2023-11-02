@@ -1,0 +1,9 @@
+<launch>
+    <include file="$(find marsupial_launchers)/drone_launch/dll.launch"/>
+    <include file="$(find marsupial_launchers)/drone_launch/os1_sensor.launch"/>
+    <include file="$(find marsupial_launchers)/drone_launch/frames.launch"/>
+
+    <include file="$(find matrice_traj_tracker)/launch/matrice_marsupial_traj_tracker.launch">
+    </include>
+
+</launch>
