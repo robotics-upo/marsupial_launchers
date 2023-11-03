@@ -138,6 +138,20 @@ Visualization Manager:
           Value: true
         arco/rear_right:
           Value: true
+        base_link:
+          Value: true
+        imu:
+          Value: true
+        odom:
+          Value: true
+        os1_imu:
+          Value: true
+        os1_lidar:
+          Value: true
+        os1_sensor:
+          Value: true
+        usb_cam:
+          Value: true
         world:
           Value: true
       Marker Alpha: 1
@@ -164,6 +178,17 @@ Visualization Manager:
               arco/rear_left:
                 {}
               arco/rear_right:
+                {}
+          odom:
+            base_link:
+              imu:
+                {}
+              os1_sensor:
+                os1_imu:
+                  {}
+                os1_lidar:
+                  {}
+              usb_cam:
                 {}
       Update Interval: 0
       Value: true
@@ -220,9 +245,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.214796543121338
+      Pitch: 1.494796633720398
       Target Frame: <Fixed Frame>
-      Yaw: 4.165413856506348
+      Yaw: 5.170414447784424
     Saved: ~
 Window Geometry:
   Displays:
