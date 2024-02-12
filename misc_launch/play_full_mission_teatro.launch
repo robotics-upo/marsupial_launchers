@@ -10,12 +10,13 @@
         <arg name="rviz" value="false"/>
     </include>
 
-    <node name="bag_player" pkg="rosbag" type="play" args="-s 0 $(arg bag_file) --clock --pause " output="screen"/>
+    <arg name="start" default="400"/>
+    <node name="bag_player" pkg="rosbag" type="play" args="-s $(arg start) $(arg bag_file) --clock --pause " output="screen"/>
 
     <node name="rviz_" pkg="rviz" type="rviz" args="-d $(find marsupial_launchers)/viz/complete_marsupial_mission.rviz"/>
 
     <node name="m100_marker" pkg="upo_markers" type="marker_node">
-      <param name="scale" value="1.5"/>
+      <param name="scale" value="2"/>
       <param name="model" value="m100"/>
     </node>
 

@@ -1,0 +1,41 @@
+<launch>
+
+  <arg name="bag_name" default="2023-11-03-13-30-54.bag"/>
+  <arg name="start" default="200"/>
+    <include file="$(find marsupial_launchers)/misc_launch/play_full_mission_teatro.launch">
+          <arg name="bag_name" default="$(arg bag_name)"/>
+          <arg name="start" default="$(arg start)"/>
+    </include>
+
+
+    <arg name="camera_1" default="usb_cam" />
+    <arg name="dictionary" default="16"/>
+    <arg name="fiducial_len" default="0.22"/>
+    <arg name="fid_slam" default="true"/>
+
+    <include file="$(find aruco_detect)/launch/aruco_detect.launch">
+        <arg name="camera" value="/usb_cam"/>
+        <arg name="image" value="image_raw"/>
+        <arg name="transport" value="compressed"/>
+        <arg name="dictionary" value="$(arg dictionary)"/>
+        <arg name="fiducial_len" value="$(arg fiducial_len)"/>
+    </include> 
+
+    <arg name="map_frame" default="world"/>
+    <arg name="odom_frame" default="odom"/>
+    <arg name="base_frame" default="base_link"/>
+    <arg name="read_only_map" default="false"/>
+    <include file="$(find fiducial_slam)/launch/fiducial_slam.launch" if="$(arg fid_slam)">
+	    <arg name="publish_tf" value="false"/>
+      <arg name="odom_frame" value="$(arg odom_frame)"/>
+      <arg name="map_frame" value="$(arg map_frame)"/>
+      <arg name="base_frame" value="$(arg base_frame)"/>
+      <arg name="fiducial_len" value="$(arg fiducial_len)"/>
+      <arg name="use_external_loc" value="true"/>
+      <arg name="read_only_map" value="$(arg read_only_map)"/>
+      <arg name="camera"  value="/usb_cam_front"/>
+      <arg name="publish_6dof_pose" value="true"/>
+    </include>
+
+    <node name="tf_cam" pkg="tf2_ros" type="static_transform_publisher" args="0 0 -0.05 -1.57 0 -1.57 base_link head_camera"/>
+</launch>
