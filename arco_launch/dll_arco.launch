@@ -68,9 +68,11 @@
   </node>
 
   <arg name="rviz" default="true"/>
-  <node pkg="rviz" name="rviz" type="rviz" args="-d $(find marsupial_launchers)/viz/localization_arco.rviz">
+  <node pkg="rviz" name="rviz" type="rviz" args="-d $(find marsupial_launchers)/viz/localization_arco.rviz" if="$(arg rviz)">
     <remap from="initialpose" to="dll_arco_node/initial_pose"/>
 
   </node>
+
+
 
 </launch>	

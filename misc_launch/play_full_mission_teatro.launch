@@ -1,14 +1,25 @@
 <launch>
 
     <param name="use_sim_time" value="true"/>
-    <arg name="bag_name" default="refinitiva_2023-03-06-12-19-25.bag"/>
-    <arg name="bag_file" default="$(env HOME)/Documents/Bags/teatro/last_day/$(arg bag_name)"/>
+    <arg name="bag_name" default="2023-11-03-13-30-54.bag"/>
+    <arg name="bag_file" default="$(env HOME)/teatro_bags_nov/$(arg bag_name)"/>
     <!-- <arg name="bag_file" default="$(env HOME)/$(arg bag_name)"/> -->
 
     <include file="$(find marsupial_launchers)/arco_launch/dll_arco.launch">
-        <arg name="robot_name"  value="tongo"/>    
+        <arg name="robot_name"  value="tongo"/>
+        <arg name="rviz" value="false"/>
     </include>
 
     <node name="bag_player" pkg="rosbag" type="play" args="-s 0 $(arg bag_file) --clock --pause " output="screen"/>
+
+    <node name="rviz_" pkg="rviz" type="rviz" args="-d $(find marsupial_launchers)/viz/complete_marsupial_mission.rviz"/>
+
+    <node name="m100_marker" pkg="upo_markers" type="marker_node">
+      <param name="scale" value="1.5"/>
+      <param name="model" value="m100"/>
+    </node>
+
+    <node name="arco_marker" pkg="upo_markers" type="arco_marker_node"/>
+
 
 </launch>
