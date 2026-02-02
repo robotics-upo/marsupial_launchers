@@ -1,194 +1,200 @@
 // Define Libraries
+#include <AccelStepper.h>
 #define nullptr NULL
 #include <ros.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/UInt16.h>
 #include <std_msgs/Float32.h>
 
+// Pin configuration
+#define encoderPinA 2  // green wire
+#define encoderPinB 3  // white wire
+#define stepPin 4
+#define dirPin 5
+#define motorInterfaceType 1
 
-// Define Variables
-int opticalPin = 2;     // optical sensor connected to digital pin 2
-int servoPin = 6;        // servo motor connected to digital pin 6
-int ledPin = 13;        // The 13th pin is connected to a LED
-int enable = 0;
-int count = 0;
-float diameter = 0.15;
-float total_pulses = 1150.0;
-float initial_L = 1.1; //initial length 
-float current_L = 1.1; //initial length 
-float ref_L = 0; // reference length to control  
-float PWM = 0;
-bool controlling = false;
-bool one_way = false;
-unsigned long current_time,  delta_time;
-unsigned long previous_time = 0;
+// Physical constants
+const float diameter = 0.15;       // drum diameter in meters
+const float pulsesPerRevolution = 1200.0; // encoder configuration (600 lines * 2)
+const float metersPerPulse = (PI * diameter) / pulsesPerRevolution; 
 
-// ROS stuff
-ros::NodeHandle  nh;
+// Variables
+volatile long encoderPulses = 0;
+volatile int lastStateA; 
+float current_L = 0.0; // current length in meters
+float ref_L = 0.0;     // target length received from ROS
+bool enable = false;   // safety enable
+bool one_way = false;  // release-only mode
 
-std_msgs::Float32 length_msg;
-std_msgs::UInt16 count_steps_turn_motor_msg;
-std_msgs::Bool length_reached_msg;
+// Objects
+AccelStepper stepper = AccelStepper(motorInterfaceType, stepPin, dirPin);
+ros::NodeHandle nh;
 
-// Let the mission controller know that the cable as reached the desired length
-ros::Publisher pub_length_reached("tie_controller/length_reached", &length_reached_msg);
+// ROS messages
+std_msgs::Float32 length_msg;      // To publish current length
+std_msgs::Bool length_reached_msg; // To notify target reached
+
+// Publishers
+ros::Publisher pub_length("tie_controller/length_status", &length_msg);
+ros::Publisher pub_reached("tie_controller/length_reached", &length_reached_msg);
+
+// Interrupt function (Encoder)
+void readEncoder() {
+  int currentA = digitalRead(encoderPinA);
+  if (currentA != lastStateA) {
+    if (digitalRead(encoderPinB) != currentA) {
+      encoderPulses++;
+    } else {
+      encoderPulses--;
+    }
+  }
+  lastStateA = currentA;
+}
 
 // Callbacks
+
+// Receive new target length
 void lengthSubCallback(const std_msgs::Float32& length_ref_msg) {
-    if ( length_ref_msg.data < 0 || length_ref_msg.data > 25) {
-      nh.loginfo("Received reference length out of range");
-      return;
-    }
-    if (length_ref_msg.data < current_L && one_way) {
-      nh.loginfo("Ignoring a shrinking command in one_way mode");
-      return;
-    }
-    if (fabs(ref_L - length_ref_msg.data) > 0.02) { 
-      ref_L = length_ref_msg.data;
-      count = 0;
-      controlling  = true;
-      nh.loginfo("Received new length command: ");
-      initial_L = current_L;
-      length_reached_msg.data = 0;
-      pub_length_reached.publish(&length_reached_msg);
-    }
+  float newTarget = length_ref_msg.data;
+
+  // Safety filters
+  if (newTarget < 0 || newTarget > 25) {
+     nh.loginfo("Error: Length out of range (0-25m)");
+     return;
+  }
+  
+  if (one_way && newTarget < current_L) {
+     nh.loginfo("One-Way mode active: Cannot retract cable.");
+     return;
+  }
+
+  // If there is a significant change in the command
+  if (abs(ref_L - newTarget) > 0.02) {
+    ref_L = newTarget;
     
+    // Conversion: Meters -> Encoder pulses
+    // Calculate which pulse count corresponds to that distance
+    long targetPulses = (long)(ref_L / metersPerPulse);
+  
+    // Simplification for AccelStepper:
+    // If encoder controls, move motor towards target
+    length_reached_msg.data = false;
+    pub_reached.publish(&length_reached_msg);
+    nh.loginfo("New target received.");
+  }
 }
 
-void resetLengthCallback(const std_msgs::Float32& length_reset) {
-     current_L = initial_L = length_reset.data;
-     controlling = false;
-     count = 0;
-}
-
+// Enable/disable motor
 void enableCallback(const std_msgs::Bool& bool_msg) {
-    enable = bool_msg.data;
-    if (enable) {
-        controlling = false;
-        nh.loginfo("Control enabled");
-        initial_L = current_L;
-    } else {
-        nh.loginfo("Control disabled");
-    }
-    count = 0;
+  enable = bool_msg.data;
+  if (!enable) {
+    stepper.stop(); // Soft stop
+    nh.loginfo("Motor DISABLED");
+  } else {
+    nh.loginfo("Motor ENABLED");
+  }
 }
 
+// Reset length estimation 
+void resetLengthCallback(const std_msgs::Float32& length_reset) {
+  // Adjust encoder pulses to match the reset length
+  float meters = length_reset.data;
+  encoderPulses = (long)(meters / metersPerPulse);
+  current_L = meters;
+  ref_L = meters;
+  stepper.setCurrentPosition(stepper.currentPosition()); // Reset motor too
+  nh.loginfo("Length manually reset.");
+}
+
+// One way mode
 void one_wayCallback(const std_msgs::Bool& bool_msg) {
-    one_way = bool_msg.data;
-    if (one_way) {
-        nh.loginfo("one_way enabled");
-    } else {
-        nh.loginfo("one_way disabled");
-    }
-    controlling = false;
-    count = 0;
+  one_way = bool_msg.data;
 }
 
-
-// Subscriber for the length command
-ros::Subscriber<std_msgs::Float32> sub("tie_controller/set_length", &lengthSubCallback );
-
-// Emit the current estimated longitude of the tie
-ros::Publisher pub_length("tie_controller/length_status", &length_msg);
-
-// Wait for the message to start the system
+// Subscribers
+ros::Subscriber<std_msgs::Float32> sub_len("tie_controller/set_length", &lengthSubCallback);
 ros::Subscriber<std_msgs::Bool> sub_enable("tie_controller/enable", &enableCallback);
-
-// Length reset topic just in case
 ros::Subscriber<std_msgs::Float32> sub_reset("tie_controller/reset_length_estimation", &resetLengthCallback);
-
-// one_way the control and estimation
-ros::Subscriber<std_msgs::Bool> sub_one_way("tie_controller/one_way", &one_wayCallback);
-
-
-
-// Para depurar el funcionamiento del cacharro
-//ros::Publisher pub_count_steps_turn_motor("tie_controller/count_steps_turn_motor", &count_steps_turn_motor_msg); 
-
-ros::Publisher pub_lenth_reached("tie_controller/length_reached", &length_reached_msg);
-
-void controlReel(float ref_L_){
-  // put your main code here, to run repeatedly:
-  float error = ref_L_ - current_L;
-  float tolerance_error = 0.02;
-  int sign = 1; // If no control action an action would increase the longitude
-   
-  if (error < tolerance_error && error > -tolerance_error && controlling){
-    PWM = 0;
-    controlling = false;
-    initial_L = current_L;
-    sign = 1.0; // If we are not controlling, the UAV might make the tether bigger
-    count = 0;
-    length_reached_msg.data = true;
-    pub_length_reached.publish(&length_reached_msg);
-  }
-  else if (error > 0 && controlling){ // increase length: Max_Vel=98 pwm , Min_Vel=118 pwm ; slope = -20 
-    if (error > 1.0)
-      PWM = 98;
-    else
-      PWM = -20 * error + 118;
-    sign = 1.0;
-  }
-  else if ( error < 0 && controlling){ // reduce lentgh: Max_Vel=195 pwm , Min_Vel=175 pwm ; slope = -20
-    if (error < -1.0)
-      PWM = 195;
-    else
-      PWM = -20 * error + 175;
-    sign = -1.0;
-
-    if (one_way) {
-      PWM = 0; // In one way mode the controller can only increase the length of the tie
-      sign = 1.0;
-    }
-  }
-  analogWrite(servoPin, PWM);
-  current_L = initial_L + (count/total_pulses)* sign * PI * diameter;
-}
-
-void countPulse(){
-  current_time = millis();
-  delta_time = current_time - previous_time;
-  previous_time = current_time;
-  if (delta_time < 20)
-    count++;
-  count_steps_turn_motor_msg.data = count;
-}
-
+ros::Subscriber<std_msgs::Bool> sub_oneway("tie_controller/one_way", &one_wayCallback);
 
 void setup() {
-    // Put your setup code here, to run once:
-    //Serial.begin(115200);
-    pinMode(opticalPin, INPUT);   // sets the digital pin 2 as input
-    pinMode(servoPin, OUTPUT);    // sets the digital pin 6 as output
-    pinMode(ledPin,OUTPUT);      // to light and disable the LED of 13 pin
+  // Pin configuration
+  pinMode(encoderPinA, INPUT_PULLUP);
+  pinMode(encoderPinB, INPUT_PULLUP);
+  // Stepper pins (4 and 5) are configured by AccelStepper
+  
+  // Encoder interrupt
+  lastStateA = digitalRead(encoderPinA);
+  attachInterrupt(digitalPinToInterrupt(encoderPinA), readEncoder, CHANGE);
 
-    attachInterrupt(digitalPinToInterrupt(opticalPin), countPulse, RISING);
-    
-    // ROS Config
-    nh.initNode();
-    nh.advertise(pub_length);
-  //  nh.advertise(pub_count_steps_turn_motor);
-    nh.advertise(pub_length_reached);
-    nh.subscribe(sub);
-    nh.subscribe(sub_enable);
-    nh.subscribe(sub_reset);
-    nh.subscribe(sub_one_way);
+  // Stepper motor configuration
+  stepper.setMaxSpeed(500);      // Speed
+  stepper.setAcceleration(800);  // Acceleration
+
+  // ROS init
+  nh.initNode();
+  nh.advertise(pub_length);
+  nh.advertise(pub_reached);
+  nh.subscribe(sub_len);
+  nh.subscribe(sub_enable);
+  nh.subscribe(sub_reset);
+  nh.subscribe(sub_oneway);
 }
 
-void loop() { 
-  if (enable){ // Reel working after security check         
-      controlReel(ref_L);
-      digitalWrite(ledPin, HIGH);
+void loop() {
+  // Calculate actual length based on Encoder
+  current_L = (float)encoderPulses * metersPerPulse;
 
-  }  else {
-      // Waiting to receive the enable topic
-      analogWrite(servoPin, 127);
-      digitalWrite(ledPin, LOW);
-      delay(10);       
+  // Movement logic with anti-oscillation
+  static bool atTarget = true;  // Motor state
+  
+  if (enable) {
+    // Calculate target in pulses
+    long targetPulses = (long)(ref_L / metersPerPulse);
+    long error = targetPulses - encoderPulses;
+    
+    // Hysteresis zones
+    const int DEAD_ZONE = 25;     // To stop (~1cm tolerance)
+    const int START_ZONE = 50;    // To start moving again
+    
+    if (atTarget) {
+      // Already at target - only move if error is large
+      if (abs(error) > START_ZONE) {
+        atTarget = false;
+        length_reached_msg.data = false;
+        pub_reached.publish(&length_reached_msg);
+      }
+    } else {
+      // Moving towards target
+      if (abs(error) <= DEAD_ZONE) {
+        stepper.stop();
+        stepper.setCurrentPosition(stepper.currentPosition());
+        atTarget = true;
+        
+        // Notify ROS
+        length_reached_msg.data = true;
+        pub_reached.publish(&length_reached_msg);
+      } else {
+        // Keep moving
+        if (error > 0) {
+          stepper.moveTo(stepper.currentPosition() + 500);
+        } else {
+          stepper.moveTo(stepper.currentPosition() - 500);
+        }
+        stepper.run();
+      }
+    }
+  } else {
+    stepper.stop();
+    atTarget = true;
   }
-  length_msg.data = current_L;
-  pub_length.publish(&length_msg);
-  //pub_count_steps_turn_motor.publish(&count_steps_turn_motor_msg);
-  nh.spinOnce();
-  delayMicroseconds(100); // when using delay alone --> milliseconds
+
+  // ROS communication
+  static unsigned long lastPub = 0;
+  if (millis() - lastPub > 100) { // 10 Hz
+    length_msg.data = current_L;
+    pub_length.publish(&length_msg);
+    nh.spinOnce();
+    lastPub = millis();
+  }
 }
