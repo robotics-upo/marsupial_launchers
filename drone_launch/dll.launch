@@ -8,7 +8,7 @@
   <arg name="initial_y" default="17.6"/>
   <arg name="initial_z" default="0.7"/>
   <arg name="initial_a" default="3.14"/> 
-  <arg name="map" default="teatro" />
+  <arg name="map" default="rellano45_withobst" />
   <arg name="map_path" default="$(find dll)/maps/$(arg map).bt"/> 
   <!--<arg name="map_path" default="$(find marsupial_optimizer)/maps/$(arg map).bt"/> -->
 
