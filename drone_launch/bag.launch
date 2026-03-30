@@ -14,8 +14,8 @@
   /dji_sdk/velocity 
   /tf_static
   /tf
-  /os1_cloud_node/imu 
-  /os1_cloud_node/points_non_dense
+  /ouster/points
+  /ouster/imu
 
   /arco/idmind_imu/imu
   /arco_os1_cloud_node/points_non_dense
