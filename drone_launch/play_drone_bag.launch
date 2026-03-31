@@ -5,17 +5,24 @@
   <arg name="odom_frame_id" default="odom"/>
   <arg name="global_frame_id" default="world"/>
    # Load by YAML file
-  <arg name="map" default="teatro" />
-  <arg name="map_path" default="$(find marsupial_optimizer)/maps/$(arg map).bt"/>
-  <node pkg="dll" type="grid3d_node_dll" name="grid" output="screen" args="$(arg map_path)">
-  </node>
+  <arg name="map" default="rellano45_withobst" />
+  <arg name="map_path" default="$(find dll)/maps/$(arg map).bt"/>
+  <!-- <node pkg="dll" type="dll_node" name="grid" output="screen" args="$(arg map_path)">
+  </node> -->
 
-  <arg name="bag" default="2023-03-01-16-26-25.bag"/>
-  <arg name="bag_path" default="$(env HOME)/theatre_bags/$(arg bag)"/>
+  <arg name="bag" default="2026-03-30-14-02-12.bag"/>
+  <arg name="bag_path" default="$(env HOME)/bags/$(arg bag)"/>
   <arg name="rate" default="1"/>
   <arg name="start" default="0"/>
-  <node pkg="rosbag" type="play" name="play" args="$(arg bag_path) --clock -s $(arg start) -r $(arg rate)" required="true"/>
+  <node pkg="rosbag" type="play" name="play" args="$(arg bag_path) --clock -s $(arg start) -r $(arg rate)" output="screen" required="true">
+    <remap from="tf" to="tf_useless"/>
+  </node>
 
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find marsupial_launchers)/viz/experiment.rviz"/>
+
+  <include file="$(find marsupial_launchers)/drone_launch/frames.launch"/>
+  <include file="$(find marsupial_launchers)/drone_launch/dll.launch">
+    <arg name="use_yaw_increments" value="false"/>
+  </include>
 
 </launch>
