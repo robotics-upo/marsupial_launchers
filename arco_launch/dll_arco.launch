@@ -6,10 +6,10 @@
    # Load by YAML file
 
    # For teatro Nov 2023 xyz = 10.572, 15.336, 0.497;  a = 1.642
-  <arg name="initial_x" default="10.57"/>
-  <arg name="initial_y" default="15.336"/>
+  <arg name="initial_x" default="18.5"/>
+  <arg name="initial_y" default="23.9"/>
   <arg name="initial_z" default="0.5"/>
-  <arg name="initial_a" default="1.642"/> 
+  <arg name="initial_a" default="3.1416"/> 
 
   # For hall45_drone_cutted
 <!--  <arg name="initial_x" default="15.9 "/>
@@ -19,8 +19,8 @@
 
   
 
-  <arg name="map" default="teatro" />
-  <arg name="map_path" default="$(find marsupial_optimizer)/maps/$(arg map).bt"/>
+  <arg name="map" default="rellano45_withobst" />
+  <arg name="map_path" default="$(find dll)/maps/$(arg map).bt"/>
 
   <arg name="in_cloud_topic" default="/$(arg robot_name)_os1_cloud_node/points_non_dense"/>
   <arg name="imu_topic" default="/$(arg robot_name)/idmind_imu/imu"/>
