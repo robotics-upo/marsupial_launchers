@@ -6,8 +6,11 @@
    # Load by YAML file
 
    # For teatro Nov 2023 xyz = 10.572, 15.336, 0.497;  a = 1.642
-  <arg name="initial_x" default="18.5"/>
-  <arg name="initial_y" default="23.9"/>
+  
+
+  # For rellano 45
+  <arg name="initial_x" default="39.4"/>
+  <arg name="initial_y" default="26.9"/>
   <arg name="initial_z" default="0.5"/>
   <arg name="initial_a" default="3.1416"/> 
 
